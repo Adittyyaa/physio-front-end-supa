@@ -24,6 +24,7 @@ export function useAuth() {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('DEBUG [onAuthStateChange]: Event =', event, 'Session User =', session?.user?.email)
       setUser(session?.user ?? null)
       // Only load data on actual sign-in events, not on every state change
       if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {

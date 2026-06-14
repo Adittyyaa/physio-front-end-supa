@@ -51,6 +51,7 @@ function clearAuthRedirectFromUrl() {
 
 export default function App() {
   const { user, role, authLoading, signOut } = useAuth()
+  console.log('DEBUG [App Render]: User =', user?.email, 'Role =', role, 'Loading =', authLoading)
   const activeTab = useAppStore((s) => s.activeTab)
   const setActiveTab = useAppStore((s) => s.setActiveTab)
   const dataLoading = useAppStore((s) => s.dataLoading)
