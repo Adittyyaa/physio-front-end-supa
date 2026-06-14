@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
 import { useAuth } from './hooks/useAuth'
@@ -57,6 +57,32 @@ export default function App() {
   const [dark, setDark] = useDarkMode()
 
   const [showConfirm, setShowConfirm] = useState(() => getAuthRedirectType() === 'signup')
+
+  useEffect(() => {
+    // Check for error in query params or hash (common in OAuth/Redirect failures)
+    const searchParams = new URLSearchParams(window.location.search)
+    const hashParams = new URLSearchParams(window.location.hash?.startsWith('#') ? window.location.hash.slice(1) : '')
+    
+    const error = searchParams.get('error_description') || 
+                  searchParams.get('error') || 
+                  hashParams.get('error_description') || 
+                  hashParams.get('error')
+                  
+    if (error) {
+      toast.error(`Authentication error: ${decodeURIComponent(error.replace(/\+/g, ' '))}`, { 
+        duration: 8000,
+        position: 'top-center'
+      })
+      
+      // Clear the error parameters from URL to clean up the browser history
+      const url = new URL(window.location.href)
+      url.searchParams.delete('error')
+      url.searchParams.delete('error_code')
+      url.searchParams.delete('error_description')
+      url.hash = ''
+      window.history.replaceState({}, document.title, url.pathname + url.search)
+    }
+  }, [])
   const [showStats, setShowStats] = useState(false)
   // For cross-section navigation (patient detail → log session / book appt / assign exercises)
   const [sessionPrePatient, setSessionPrePatient] = useState(null)
