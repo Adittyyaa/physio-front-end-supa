@@ -245,7 +245,7 @@ declare
   input_role text;
 begin
   -- Check if role is already specified in signup metadata
-  input_role := new.raw_user_meta_data->>>'role';
+  input_role := new.raw_user_meta_data->>'role';
   
   -- Check if the email exists in public.tbl_patients
   select id into matching_patient_id
@@ -254,8 +254,8 @@ begin
   limit 1;
 
   -- If they signed up with a patient code in metadata
-  if new.raw_user_meta_data->>>'patient_id' is not null and new.raw_user_meta_data->>>'patient_id' <> '' then
-    matching_patient_id := new.raw_user_meta_data->>>'patient_id';
+  if new.raw_user_meta_data->>'patient_id' is not null and new.raw_user_meta_data->>'patient_id' <> '' then
+    matching_patient_id := new.raw_user_meta_data->>'patient_id';
   end if;
 
   if matching_patient_id is not null or input_role = 'patient' then
